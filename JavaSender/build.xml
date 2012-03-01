@@ -1,0 +1,34 @@
+<project default="buildSender">
+  <target name="compile">
+    <javac debug="on" srcdir="src" destdir="."/>
+  </target>
+
+
+  <target name="jar" depends="compile">
+    <delete file="sender.jar" />
+    <manifest file="MANIFEST.MF">
+      <attribute name="Main-Class" value="SenderTest.Node" />
+    </manifest>
+
+    <jar destfile="sender.jar" basedir="." includes="SenderTest/*.class,src/*.java, build.xml" manifest="MANIFEST.MF" />
+  </target>
+
+  <target name="cleanup">
+    <delete>
+      <fileset dir="." includes="SenderTest/*.class"/>
+      <fileset dir="SenderTest"/>
+      <fileset file="MANIFEST.MF"/>
+    </delete>
+  </target>
+
+  <target name="buildSender" depends="compile,jar, cleanup" />
+
+
+  <!-- 还不清楚如何运行jar文件 -->
+  <target name="run">
+    <java classname="Sender.Node"> 
+      <jvmarg value="-enableasserts"/>
+      <classpath include="Sender.jar"/>
+    </java>
+  </target>
+</project>
