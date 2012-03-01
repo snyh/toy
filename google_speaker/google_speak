@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use LWP;
+use HTTP::Request;
+
+#语音播放程序
+my $speaker = "/usr/bin/play";
+
+#单词存放目录
+my $dir = "/home/snyh/.words/";
+
+#真人发音库
+my $RealTTSdir = "/usr/share/WyabdcRealPeopleTTS/";
+
+my $word = $ARGV[0] || "Please give a word";
+
+&checkRealTTS($word);
+print "Not Found RealTTS\n";
+
+&fetch unless -s ($dir.$word.".mp3");
+&speak($word);
+
+sub speak{
+  my $word = shift;
+  `$speaker $dir$word.mp3 2>/dev/null`;
+}
+
+#检查真人语音库中是否有此单词,若有则直接播放
+sub checkRealTTS {
+  my $word = shift;
+  my $s = substr($word, 0, 1);
+  my $word_path = "$RealTTSdir/$s/$word.wav";
+  if (-s $word_path) {
+    print "play $word_path\n";
+    `$speaker $word_path` ;
+    die; 
+  }
+}
+sub fetch{
+  my $url = "http://translate.google.com/translate_tts?q=$word&tl=en";
+
+  my $ua = LWP::UserAgent->new();
+
+  my $request = HTTP::Request->new(
+    GET=>$url,
+    [
+    "User-Agent"=>'Mozilla/5.0(X11; U; Linux i686; en-US',
+    "Accept"=>"text/html,*/*",
+    "Cookie"=>'PREF=ID=ab2a7aed2581dd0a:U=fa2d796a5b0aa49f:LD=en:CR=2:TM=1256380402:LM=1273541137:DV=0SJoub_nzRUL:GM=1:S=cPFlIMAj2iJr_SP5; NID=37=uXtO95XRblqToOwXZ6U1kSHlU3daDY5SUqkfkThbITJZfuzH_qV2v6ixd41ASj-X3qSv86laqx5jAg-ZjgCMqr1TTifCPNq4-BQ9cAMv0Fm_knDxs5AUl1hDszFcW7Dt; rememberme=true; SS=DQAAAJ8AAAAUZkz_GYg5CH8eDKmJh3i6SgwAPBMb3XoRHfcRiEIUHS-JyDq6_mIxT_nk_dw-Sa0clrLUhonkbAmRR7CU_P7h8WTSvHMoiqTA_gpalTBBg8n8CrTQcsxsIo_ERguIWrsXeug7lGOnksAQB_NxBZiSfqzII0f8Qv_E-eZFRG05dPbjclobv_hJjA_5p8eSGapA-hJRKW1Jr6Zc3ngwq115; MPRF=H4sIAAAAAAAAAKtYfPLJ5wWqXUwMk5gUDHCA1LQUI2NzU6MJzAwAEzEEOTAAAAA; SID=DQAAAJ4AAADKeeHMzLJ4SCL1DnrJ67Be6zoQzMOD7GDCLGs6IJx-bNidsnrXXe7B9dKJTd2l2GJnER_FGHPWIMS_Rjhp0VIE34X9yvh70DFPcQu_jPnZ9o2AsoEjs-chOdKrr5ngK2R-kZxXfE8IkGeqf6y5ClBZ2uV-zRl0WebZfP1iEHO7ZKee6iOINbsRx1R6-Jdr1_gItA6p2XUwjEmtyM0LRbG9; TZ=-480; SSID=AMsinI4B_6CH8UlWJ; HSID=AFwe8lAq2R3CUTKAl; S=sorry=WbsxYbVeI_6Rwb6I4zcSWw:photos_html=Smj0YLKpMEsmOgkI6c-3tA'
+    ]
+  );
+
+  $ua->request($request, $dir.$word.".mp3");
+}
