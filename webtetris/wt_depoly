@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PROG=web
+[ -d build ] || mkdir build
+cd build
+cmake ..
+make
+[ -r ./resources ] || cp -ax /usr/share/Wt/resources/ .
+[ -r ./ext ] || cp -ax /usr/share/Wt/ext/ .
+./${PROG}.wt --http-address 127.0.0.1 --http-port 8080 --docroot . --no-compression 

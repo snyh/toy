@@ -1,0 +1,5 @@
+find_package(Boost COMPONENTS signals)
+find_package(Wt REQUIRED)
+include_directories(${Wt_INCLUDE_DIR})
+add_executable(web.wt Shape.cpp tetris.cpp BoardWidget.cpp)
+target_link_libraries(web.wt ${Wt_LIBRARY} ${Wt_HTTP_LIBRARY} ${Wt_EXT_LIBRARY} ${Boost_LIBRARIES})
