@@ -1,0 +1,154 @@
+<html>
+	<head>
+		<meta charset=utf8>
+		<title>磁盘寻道算法演示</title>
+	</head>
+	<body>
+		<canvas id="disk" width="420" height="420">请使用支持HTML5的游览器</canvas>
+		<div>
+			随机序列
+		<span id="random"></span> </br>
+			<div id="s_fcfs"></div>
+			<div id="s_sstf"></div>
+			<div id="s_scan"></div>
+		</div>
+		<script type="text/javascript">
+			function draw(path, color) 
+			{
+				var dc = document.getElementById('disk').getContext('2d');
+
+				dc.beginPath();
+				dc.moveTo(20, 20);
+				dc.lineTo(20, 420);
+				dc.lineTo(420, 420);
+				dc.stroke();
+
+				dc.strokeStyle = color;
+				dc.beginPath();
+				for (var i=0; i<10; i++) {
+					var x = 20 + 40*i;
+					var y = 420 - ((path[i]) * 2);
+					dc.lineTo(x, y);
+					dc.fillText(path[i], x-3, y-3);
+				}
+				dc.stroke();
+				dc.closePath();
+			}
+
+			function sort(array) 
+			{
+				for(var i=0; i<array.length; i++) {
+					for(var j=i+1; j<array.length; j++) {
+						if (array[i]-0 > array[j]) {
+							var tmp = array[j];
+							array[j] = array[i];
+							array[i] = tmp;
+						}
+					}
+				}
+				return array;
+			}
+
+			function random()
+			{
+				var i=0;
+				var numbers = new Array();
+				for (i=0; i<9; i++) {
+					var d = Math.round(Math.random()*200) + 1;
+					while(numbers.indexOf(d) != -1){
+						d = Math.round(Math.random()*200) + 1;
+					}
+					numbers[i] = d;
+				}
+				document.getElementById('random').innerHTML = numbers.join(',');
+
+				fcfs();
+				sstf();
+				scan();
+			}
+
+
+			//求数组之间的距离
+			function sums(path)
+			{
+				var first = path[0];
+				var i=path.length-1;
+				var sum = 0;
+				for (; i>0; i--) {
+					var d = Math.abs(path[i]-path[i-1]);
+					sum += d;
+				}
+				return sum;
+			}
+
+			function fcfs()
+			{
+				path = document.getElementById('random').innerHTML.split(',');
+				sum = sums(path);
+
+				document.getElementById('s_fcfs').innerHTML = "FCFS:" + sum;
+				draw(path, 'red');
+			}
+
+			function sstf()
+			{
+				var path = document.getElementById('random').innerHTML.split(',');
+				var result = new Array();
+				var used = new Array();
+
+				var cur = path[0];
+				for(var i=0; i<path.length; i++) {
+					var index = 0;
+					var min = 9999;
+					for(var j=0; j<path.length; j++) {
+						if (used.indexOf(j) != -1)
+						continue;
+						var tmp2 = Math.abs(cur - path[j]);
+						if (tmp2 < min) {
+							index = j;
+							min = tmp2;
+						}
+					}
+					cur = path[index];
+					result.push(path[index]);
+					used.push(index);
+				}
+				sum = sums(result);
+				document.getElementById('s_sstf').innerHTML = "SSTF:" + sum;
+				draw(result, 'blue');
+			}
+
+			function scan()
+			{
+				var path = document.getElementById('random').innerHTML.split(',');
+				var result = new Array();
+				result.push(path[0]);
+
+				var lower = new Array();
+				var upper = new Array();
+				var first = path[0];
+				for (var i=1; i<path.length; i++) {
+					if ((path[i]-0) > first) {
+						upper.push(path[i]-0);
+						} else {
+						lower.push(path[i]-0);
+					}
+				}
+				sort(upper);
+				sort(lower);
+				lower.reverse();
+				if (Math.abs(upper[0] - first)- Math.abs(lower[0] - first) > 0) {
+					result = result.concat(lower).concat(upper);
+					} else {
+					result = result.concat(upper).concat(lower);
+				}
+				sum = sums(result);
+				document.getElementById('s_scan').innerHTML = "SCAN:" + sum;
+				draw(result, 'gray');
+			}
+
+			random();
+
+		</script>
+	</body>
+</html>

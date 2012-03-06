@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+void get_query_param(double* speed, double* hd, double* screen);
+void query_show_laptop(double speed, double hd, double screen);
+void show_quiz();
+
+EXEC SQL INCLUDE sqlca;
+
+int main()
+{
+
+  EXEC SQL CONNECT TO productdb@localhost  USER  postgres;
+  if (sqlca.sqlcode != 0) {
+	  printf(sqlca.sqlerrm.sqlerrmc);
+	  exit(-1);
+  }
+
+  show_quiz();
+
+  double speed=0, hd=0, screen=0;
+  get_query_param(&speed, &hd, &screen);
+  query_show_laptop(speed, hd, screen);
+
+  EXEC SQL DISCONNECT ALL;
+  return 0;
+}
+
+void show_quiz() 
+{
+  printf("题目:\n"
+		 "\t询问用户能接受的速度、硬盘大小和显示器尺寸的最小值。"
+		 "找出满足要求的所有笔记本电脑(laptop)。"
+		 "输出它们的说明(laptop 的所有属性)和它们的制造商。\n\n");
+}
+
+void get_query_param(double* speed, double* hd, double* screen)
+{
+  printf("输入需要查询的最小值\n");
+  printf("速度(GHz):");
+  scanf("%lf", speed);
+  printf("硬盘容量(GB):");
+  scanf("%lf", hd);
+  *hd = ceil(*hd);
+  printf("屏幕大小:");
+  scanf("%lf", screen);
+}
+
+
+void query_show_laptop(double p_speed, double p_hd, double p_screen)
+{
+  //构建查询语句
+  EXEC SQL BEGIN DECLARE SECTION;
+  double _speed = p_speed, _hd = p_hd, _screen = p_screen;
+  EXEC SQL END DECLARE SECTION;
+
+  EXEC SQL DECLARE query_laptop CURSOR FOR
+	SELECT laptop.*, product.maker 
+	FROM laptop, product
+	WHERE speed>= :_speed AND hd>= :_hd AND screen>= :_screen
+	AND laptop.model=product.model;
+
+  //执行查询
+  EXEC SQL OPEN query_laptop;
+
+  //获取结果
+  EXEC SQL BEGIN DECLARE SECTION;
+  char model[10], maker[10];
+  int hd, ram;
+  double speed, screen, price;
+  EXEC SQL END DECLARE SECTION;
+
+
+  system("clear");
+  printf("  型号  |  速度  |  内存  |  硬盘  | 显示器 |  价格  | 制造商 \n"
+		 "--------+--------+--------+--------+--------+--------+--------\n");
+  while (sqlca.sqlcode == 0) {
+	  EXEC SQL FETCH NEXT FROM query_laptop INTO 
+		:model, :speed, :hd, :ram, :screen, :price, :maker;
+
+	  printf(" %-6s | %-6.2lf | %-6d | %-6d | %-6.1lf | %-6.1lf | %-6s \n", 
+			 model,   speed,     ram,   hd,    screen,   price,   maker);
+  }
+  printf("--------+-------+---------+--------+--------+--------+--------\n");
+
+  EXEC SQL CLOSE query_laptop;
+}
