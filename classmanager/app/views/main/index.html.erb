@@ -1,0 +1,81 @@
+<% content_for :breadcrumb do %>
+  <ul class="breadcrumb">
+  <span>当前位置:</span>
+    <li><a href="/">主页</a><span class="divider">/</span></li>
+    <li><big>最新动态</big></li>
+  </ul>
+<% end %>
+
+<div class="row">
+  <div class="span9">
+    <div class="row">
+    <div class="span5">
+      <%= high_chart("chartdepartment", @chart_department)%>
+    </div>
+    <div class="span4">
+      <%= high_chart("chartavg", @chart_avg) do |c| %>
+        <%= "options.xAxis.labels = {}" %>
+        <%= "options.xAxis.labels.enabled = false " %>
+      <% end %>
+    </div>
+  </div>
+
+    <div id="news">
+      <ul>
+        <% @events.each do |e| %>
+          <%- if e.type -%>
+            <li class="alert alert-success">
+              表扬:
+              (<%= e.student.classbj.department.name %>)
+              <span>
+                <a href=<%=classbj_path(e.student.classbj)%>><%= e.student.classbj.name %></a>
+              </span>班的
+              <span><a href=<%=student_path(e.student)%>><%= e.student.name %></a></span>同学
+              因为"<b><%= e.description %></b>"特加<span><%= e.score %></span>分以资鼓励.
+            </li>
+          <%- else -%>
+            <li class="alert alert-error">
+              批评: 
+              (<%= e.student.classbj.department.name %>)
+              <span>
+                <a href=<%=classbj_path(e.student.classbj)%>><%= e.student.classbj.name %></a>
+              </span>班的
+              <span><a href=<%=student_path(e.student)%>><%= e.student.name %></a></span>同学
+              因为"<%= e.description %>"特对其进行减<span><%= e.score %></span>分的处罚.
+            </li>
+          <%- end -%>
+        <%- end -%>
+      </ul>
+    </div>
+  </div>
+
+
+
+  <div class="span3">
+    <div>
+      <h2>院系列表</h2>
+
+      <%- @departments.each do |d| -%>
+        <div>
+          <a href=<%=department_path(d)%>><span class="icon-home"></span></a>
+          <button class="btn btn-danger" <%-if d.num_of_class != 0%>data-toggle="collapse" data-target="#clist<%=d.id%>"<%-end-%>
+            >
+            <%=  d.name %>(<%= d.num_of_class %>)
+          </button>
+          <%-if d.num_of_class != 0-%>
+            <div id="clist<%=d.id%>" class="collapse in">
+              <ul>
+                <%- d.classes.each do |c| %>
+                  <li><a href=<%= classbj_path(c)%>><%= c.name %></a></li>
+                <%- end %>
+              </ul>
+            </div>
+          <%-end-%>
+        </div>
+      <%- end -%>
+    </div>
+  </div>
+</div>
+<script>
+  $(".collapse").collapse();
+</script>

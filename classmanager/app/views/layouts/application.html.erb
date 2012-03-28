@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>班级管理系统-湖北经济学院</title>
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body style="padding-top:0">
+    <div class="container">
+      <div class="nav">
+        <h1>湖北经济学院班级管理系统</h1>
+        <%= yield :breadcrumb %>
+      </div>
+      <%= yield %>
+      <div id="Footer">
+        本系统为湖北经济学院信管学院计算机科学与技术专业S1021班<span href="" id="author" rel="tooltip" title="浮肿大神"><b>胡辰</b></span>同学毕业设计作品
+        <span class="pull-right"><a href="/admin">后台登录</a></span>
+      </div>
+    </div>
+    <script>
+      $('#author').tooltip();
+    </script>
+  </body>
+</html>

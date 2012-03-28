@@ -1,0 +1,37 @@
+<% content_for :breadcrumb do %>
+  <ul class="breadcrumb">
+    <span>当前位置:</span>
+    <li><a href="/">主页</a><span class="divider">/</span></li>
+    <li><a href=<%=@departurl%>><%=@departname%></a><span class="divider">/</span></li>
+    <li><a href=<%=@classurl%>><%=@classname%></a><span class="divider">/</span></li>
+    <li><a href="#"><big><%=@studentname%></big></a><span class="divider">/</span></li>
+  </ul>
+<% end %>
+
+<span>累积得分:<%=@score%></span>
+<div class="row">
+  <div class="span4">
+    <%= high_chart("chartmonth", @chart_month)%>
+  </div>
+
+  <div class="span7">
+    <%= high_chart("chartyear", @chart_year)%>
+  </div>
+</div>
+
+<table class="table">
+  <thead><h3>事件详情表</h3></thead>
+  <tbody>
+    <tr>
+      <th>时间</th> <th>事件</th> <th>影响分数</th> <th>备注</th>
+    </tr>
+    <%- @events.each do |e| %>
+      <tr>
+        <th><%= e.date %></th>
+        <th><%= e.description %></th>
+        <th><%= e.score! %></th>
+        <th><%= e.remark%></th>
+      </tr>
+    <%- end %>
+  </tbody>
+</table>

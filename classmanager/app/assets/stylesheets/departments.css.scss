@@ -1,0 +1,29 @@
+// Place all the styles related to the departments controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.class_box {
+  float:left;
+  border-style: groove;
+  padding:5px;
+  margin: 5px 20px;
+  text-align: left;
+  ul {
+    list-style: none;
+  }
+  a {
+    text-decoration: none
+  }
+  a:visited {
+    color: black; 
+  }
+  a:hover {
+    color: white;
+  }
+  span {
+    text-align: center;
+    margin-left: 2em;
+    text-shadow: 0px 2px 3px #555;
+    font-size: 1.5em
+  }
+}

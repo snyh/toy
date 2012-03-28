@@ -1,0 +1,22 @@
+<% content_for :breadcrumb do %>
+  <ul class="breadcrumb">
+    <span>当前位置:</span>
+    <li><a href="/">主页</a><span class="divider">/</span></li>
+    <li><a href="#"><big><%=@departname%></big></a><span class="divider">/</span></li>
+  </ul>
+<% end %>
+
+<ul>
+<% @classes.each do |c| %>
+  <div class="class_box">
+    <ul>
+      <li><b>班级名称:</b><span><a href=<%=classbj_path(c)%>><%=c.name%></a></span></li>
+      <li><b>班级人数:</b><span><%=c.num%></span></li>
+      <li><b>人均分数:</b><span><%=c.avg_score%></span></li>
+      <li><b>累计总分:</b><span><%=c.score%></span></li>
+      <li><b>院内排名:</b><span><%=c.rank_department%></span></li>
+      <li><b>全校排名:</b><span><%=c.rank_global%></span></li>
+    </ul>
+  </div>
+<% end %>
+</ul>

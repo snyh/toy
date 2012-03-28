@@ -1,0 +1,44 @@
+<% content_for :breadcrumb do %>
+  <ul class="breadcrumb">
+  <span>当前位置:</span>
+    <li><a href="/">主页</a><span class="divider">/</span></li>
+    <li><a href=<%=@departurl%>><%=@departname%></a><span class="divider">/</span></li>
+    <li><a href="#"><big><%=@classname%></big></a><span class="divider">/</span></li>
+  </ul>
+<% end %>
+<div class="row">
+  <div class="span8">
+    <table class="table">
+      <thead><h3>班级内部情况<small>(点击成员名查看详情)</small></h3></thead>
+      <tr>
+        <th>成员</th> <th>性别</th> <th>学号</th> <th>个人总分</th>
+      </tr>
+      <tbody>
+        <%- @students.each do |s| %>
+            <tr>
+              <td><a href=<%=student_path(s)%>><%= s.name %></a></td>
+              <td><%= s.sex %></td>
+              <td><%= s.No %></td>
+              <td><%= s.score %></td>
+            </tr>
+        <%- end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="span4">
+    <table class="table">
+      <thead><h3>校内情况</h3></thead>
+      <tr>
+        <th>全校排名</th> <th>院内排名</th> <th>班级总分</th>
+      </tr>
+      <tbody>
+        <tr>
+          <td><%= @global_rank %></td>
+          <td><%= @depart_rank %></td>
+          <td><%= @score %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

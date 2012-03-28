@@ -1,0 +1,139 @@
+zh-CN:
+  support:
+    array:
+      words_connector: " "
+      last_word_connector: " "
+  datetime:
+    distance_in_words:
+      x_minutes: "%{count} 分钟"
+      less_than_x_minutes: "小于%{count}分钟"
+      about_x_hours: "大约%{count}小时"
+  home:
+    name: "主页"
+  views:
+    pagination:
+      previous: "&laquo; 前一页"
+      next: "后一页 &raquo;"
+      truncate: "…"
+  admin:
+    misc:
+      filter_date_format: "mm/dd/yy" # a combination of 'dd', 'mm' and 'yy' with any delimiter. No other interpolation will be done!
+      search: "搜索"
+      filter: "过滤器"
+      refresh: "刷新"
+      show_all: "显示所有"
+      add_filter: "添加过滤器"
+      bulk_menu_title: "选择条目"
+      remove: "删除"
+      add_new: "新增"
+      chosen: "选择 %{name}"
+      chose_all: "选择所有"
+      clear_all: "清除所有"
+      up: "上"
+      down: "下"
+      navigation: "导航"
+      log_out: "退出"
+      ago: "之前"
+    flash:
+      successful: "成功对%{name}执行%{action}操作"
+      error: "%{name} %{action} 执行失败"
+      noaction: "没有动作被执行"
+      model_not_found: "Model '%{model}' 找不到"
+      object_not_found: "ID为 '%{id}' 的 %{model} 找不到"
+    table_headers:
+      model_name: "Model名称"
+      last_used: "最新使用的"
+      records: "记录"
+      username: "用户"
+      changes: "变更"
+      created_at: "日期/时间"
+      item: "条目"
+      message: "消息"
+    actions:
+      dashboard:
+        title: "站点管理"
+        menu: "面板"
+        breadcrumb: "面板"
+      index:
+        title: "List of %{model_label_plural}"
+        menu: "List"
+        breadcrumb: "%{model_label_plural}"
+      show:
+        title: "Details for %{model_label} '%{object_label}'"
+        menu: "Show"
+        breadcrumb: "%{object_label}"
+      show_in_app:
+        menu: "Show in app"
+      new:
+        title: "新增 %{model_label}"
+        menu: "新增"
+        breadcrumb: "添加"
+        link: "添加一个%{model_label}"
+        done: "建立了"
+      edit:
+        title: "编辑 %{model_label} '%{object_label}'"
+        menu: "编辑"
+        breadcrumb: "编辑"
+        link: "编辑 %{model_label}"
+        done: "更新了"
+      delete:
+        title: "删除 %{model_label} '%{object_label}'"
+        menu: "删除"
+        breadcrumb: "删除"
+        link: "删除 '%{object_label}'"
+        done: "删除了"
+      bulk_delete:
+        title: "删除 %{model_label_plural}"
+        menu: "Multiple delete"
+        breadcrumb: "Multiple delete"
+        bulk_link: "Delete selected %{model_label_plural}"
+      export:
+        title: "导出 %{model_label_plural}"
+        menu: "导出"
+        breadcrumb: "导出"
+        link: "Export found %{model_label_plural}"
+        bulk_link: "Export selected %{model_label_plural}"
+        done: "exported"
+      history_index:
+        title: "%{model_label_plural}的历史信息"
+        menu: "历史"
+        breadcrumb: "历史"
+      history_show:
+        title: "History for %{model_label} '%{object_label}'"
+        menu: "历史"
+        breadcrumb: "历史"
+    form:
+      cancel: "取消"
+      basic_info: "基础信息"
+      required: "必须"
+      optional: "可选"
+      one_char: "character"
+      char_length_up_to: "length up to"
+      char_length_of: "length of"
+      save: "保存"
+      save_and_add_another: "保持后添加另外一个"
+      save_and_edit: "保存后编辑"
+      all_of_the_following_related_items_will_be_deleted: "? The following related items may be deleted or orphaned:"
+      are_you_sure_you_want_to_delete_the_object: "Are you sure you want to delete this %{model_name}"
+      confirmation: "Yes, I'm sure"
+      bulk_delete: "The following objects will be deleted, which may delete or orphan some of their related dependencies:"
+      new_model: "%{name} (new)"
+    export:
+      confirmation: "Export to %{name}"
+      select: "Select fields to export"
+      fields_from: "Fields from %{name}"
+      fields_from_associated: "Fields from associated %{name}"
+      display: "Display %{name}: %{type}"
+      options_for: "Options for %{name}"
+      empty_value_for_associated_objects: "<empty>"
+      click_to_reverse_selection: 'Click to reverse selection'
+      csv:
+        header_for_root_methods: "%{name}" # 'model' is available
+        header_for_association_methods: "%{name} [%{association}]"
+        encoding_to: "Encode to"
+        encoding_to_help: "Choose output encoding. Leave empty to let current input encoding untouched: (%{name})"
+        skip_header: "No header"
+        skip_header_help: "Do not output a header (no fields description)"
+        default_col_sep: ","
+        col_sep: "Column separator"
+        col_sep_help: "Leave blank for default ('%{value}')" # value is default_col_sep
