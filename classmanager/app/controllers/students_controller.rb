@@ -24,16 +24,9 @@ class StudentsController < ApplicationController
     s_minus = []
     tmp1 = 0
     tmp2 = 0
-    @events.where("date <= :day", day: Date.new(year, month, 1)).each do |e|
-      if e.score! > 0
-        #tmp1 += e.score
-      else
-        #tmp2 += e.score
-      end
-    end
     (1..day).each do |d|
       d = Date.new(year, month, d)
-      es = @events.where("date >= :b AND date <= :day", b: d, day: d.succ)
+      es = @events.select { |e| e.date >= d && e.date <= d.succ}
       es.each do |e|
         if e.score! > 0
           tmp1 += e.score
