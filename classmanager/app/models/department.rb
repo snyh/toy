@@ -6,6 +6,7 @@ class Department < ActiveRecord::Base
   end
 
   def avg_score
+    return 0 if self.num_of_class <= 0
     self.score / self.num_of_class
   end
 

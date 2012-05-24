@@ -18,7 +18,7 @@ void useage ();
 int main (int argc, char **argv){
     guint *ucode = NULL;
     gchar *buf = NULL;
-    gchar *font = "./font/wqy.tty";
+    gchar *font = "./font/wqy-microhei.ttc";
     gchar f_size = 16;
     gchar *input = NULL, *output = "./output";
     FILE *f_out;
