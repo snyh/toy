@@ -1,0 +1,27 @@
+{
+    "name": "Proxy",
+    "description": "Add ZXProxy menu and remove google search's redirect link",
+    "version": "0.6",
+    "permissions": ["contextMenus", "tabs", "http://*/*", "https://*/*"],
+    "background": {
+        "scripts": ["proxy.js"]
+    },
+
+    "content_scripts": [
+    {
+        "matches": ["https://www.zxproxy.com/*"],
+        "css": ["zxproxy.css"]
+    },
+    {
+        //"matches": ["*://*.google.com.hk/search*", "*://*.google.com/search*"],
+      "matches" : [
+        "http://*/*",
+        "https://*/*"
+      ],
+        "matches": ["*://*.google.com.hk/search*", "*://*.google.com/search*"],
+        "js": ["unredict.js"],
+        "run_at": "document_idle",
+        "all_frames": false
+    }
+    ]
+}
