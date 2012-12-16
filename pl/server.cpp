@@ -1,7 +1,9 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
+#include "msg.h"
 
 using boost::asio::ip::tcp;
+namespace ba = boost::asio;
 
 class Session {
     public:
@@ -15,10 +17,23 @@ class Session {
         }
 
         void start() {
-            m_socket.async_read_some(boost::asio::buffer(m_data, max_length),
-                    boost::bind(&Session::handle_read, this,
+            ba::async_read(m_socket, 
+                    ba::buffer(m_data, 24),
+                    boost::bind(&Session::handle_auth, this,
                         boost::asio::placeholders::error,
                         boost::asio::placeholders::bytes_transferred));
+        }
+
+        void handle_auth(const boost::system::error_code& error,
+                size_t bytes_transferred) {
+            uint32_t aid = *(uint32_t*)(m_data);
+            uint32_t uid = *(uint32_t*)(m_data+4);
+            UID key;
+            memcpy(key.data, m_data+8, 16);
+            printf("aid:%d  uid:%d\n",  aid, uid);
+
+            start();
+
         }
 
         void handle_read(const boost::system::error_code& error,
@@ -83,7 +98,7 @@ int main(int argc, char* argv[])
 {
     try {
         boost::asio::io_service io_service;
-        Server s(io_service, 8810);
+        Server s(io_service, 8011);
         io_service.run();
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
