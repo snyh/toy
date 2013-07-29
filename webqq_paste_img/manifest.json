@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "QQPasteImg",
+    "description": "paste image direct from clipboard when use webqq",
+    "version": "0.6",
+    "permissions": ["webRequestBlocking", "webRequest", "*://*.qq.com/*"],
+
+    "background": {
+        "scripts": ["hack.js"],
+        "persistent": true
+    },
+
+    "content_scripts": [{
+        "matches": ["*://web2.qq.com/*"],
+        "js": ["paste_img.js"]
+    }]
+    ,"web_accessible_resources": ["new.js"]
+}
