@@ -1,0 +1,93 @@
+#!/usr/bin/python
+import gtk
+
+css_path = "markdown.css"
+port = 8887
+
+import gio
+s = gio.SocketService()
+css_content = ""
+try:
+    with open(css_path) as f:
+        css_content = f.read()
+except:
+    pass
+
+# Unfortunately python gio has no binding for add_any_inet_port. 
+s.add_inet_port(port, s)
+
+_scroll_css = """
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255, 255, 255, 0.4);
+}
+"""
+
+def update_markdown(service, con, source):
+    from markdown import Markdown
+    m = Markdown()
+    a = con.get_input_stream().read()
+    content = "<style> %s %s</style>\n" % (css_content, _scroll_css)
+    content = content + m.convert(a)
+
+    web.load_string(content, "text/html", "utf8", "/")
+
+s.connect("incoming", update_markdown)
+s.start()
+
+
+__vim_script = """
+function! Gogo()
+    let current_buffer = join(getbufline("%%", 1, "$"), "\\n")
+    silent exec "!echo " . escape(shellescape(current_buffer), "%%!#") . " | nc localhost %d &>/dev/null &"
+endfunction
+autocmd CursorMoved,CursorMovedI,CursorHold,CursorHoldI * silent call Gogo()
+"""  % port
+
+import vte
+def run_vim_with_script(vte):
+    import tempfile
+    with tempfile.NamedTemporaryFile(delete=False) as t:
+        t.write(__vim_script)
+        import sys
+        sys.argv.append("-S")
+        sys.argv.append(t.name)
+        vte.fork_command("vim", sys.argv)
+        import glib
+        glib.timeout_add(1000, lambda: t.unlink(t.name))
+
+v = vte.Terminal()
+run_vim_with_script(v)
+v.connect("child-exited", gtk.main_quit)
+
+import webkit
+web = webkit.WebView()
+settings = web.get_settings()
+web.set_size_request(400, 500)
+#settings.set_property("enable-default-context-menu", True)
+
+
+h = gtk.HPaned()
+h.pack1(web, True)
+h.pack2(v)
+
+w = gtk.Window()
+w.add(h)
+
+w.show_all()
+w.connect("destroy", gtk.main_quit)
+
+gtk.main()
