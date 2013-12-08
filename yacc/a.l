@@ -61,8 +61,11 @@ EXP ([Ee][-+]?[0-9]+)
 
 "OR"	return OR
 
+
 {NUM} 	tmp, _ := strconv.ParseInt(string(y.buf), 0, 64); lval.number = float64(tmp); return NUMBER
 {FLOAT}	tmp, _ := strconv.ParseFloat(string(y.buf), 64); lval.number = float64(tmp); return NUMBER
+
+[a-zA-Z][a-zA-Z0-9]* lval.symbol = Lookup(string(y.buf)); return NAME
 
 \n	return EOL
 

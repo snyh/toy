@@ -9,17 +9,19 @@ import (
 %}
 
 %union {
-    value AST
+    node AST
     number float64
     fn int
+    symbol *Symbol
 }
 
 
 %token EOL COMMENT 
 %token <number> NUMBER
 %token <fn> FUNC
+%token <symbol> NAME
 
-%type <value> exp 
+%type <node> exp explist
 
 %start calclist
 %left OR
@@ -37,6 +39,10 @@ calclist:
 	| calclist exp { eval($2) }
 	;
 
+
+explist: exp
+       | exp ',' explist { $$ = NewAST("List", $1, $3) }
+
 exp: exp '+' exp { $$ = NewAST("+", $1, $3) }
    | exp '-' exp { $$ = NewAST("-", $1, $3) }
    | exp '*' exp { $$ = NewAST("*", $1, $3) }
@@ -46,8 +52,10 @@ exp: exp '+' exp { $$ = NewAST("+", $1, $3) }
    | '|' exp 	 { $$ = NewAST("|", $2, nil) }
    | '(' exp ')' { $$ = $2 }
    | NUMBER      { $$ = NumberAST($1) }
+   | NAME 	 { $$ = NewRef($1) }
    | '-' exp %prec UMINUS { $$ = NewAST("M", $2, nil) }
-   | FUNC '(' exp ')' { $$ = NewFunc($1, $3) }
+   | FUNC '(' explist ')' { $$ = NewFunc($1, $3) }
+   | NAME '=' exp  { $$ = NewASIGN($1, $3) }
    ;
 
 %%

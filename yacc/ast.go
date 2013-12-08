@@ -3,6 +3,20 @@ package main
 import "fmt"
 import "math"
 
+type Symbol struct {
+	name  string
+	value float64
+}
+
+var _symTable = make(map[string]*Symbol)
+
+func Lookup(name string) *Symbol {
+	if _, ok := _symTable[name]; !ok {
+		_symTable[name] = &Symbol{}
+	}
+	return _symTable[name]
+}
+
 type AST interface {
 	Eval() float64
 	Type() string
@@ -56,6 +70,33 @@ func (v BuiltInAST) Eval() float64 {
 
 func (v BuiltInAST) Type() string { return "F" }
 
+type AsignAST struct {
+	name  *Symbol
+	value AST
+}
+
+func (v AsignAST) Type() string { return "=" }
+func (v AsignAST) Eval() float64 {
+	v.name.value = v.value.Eval()
+	return v.name.value
+}
+
+func NewASIGN(name *Symbol, value AST) AST {
+	return &AsignAST{name, value}
+}
+
+type SymbolAST struct {
+	name *Symbol
+}
+
+func (v SymbolAST) Eval() float64 {
+	return v.name.value
+}
+func (v SymbolAST) Type() string { return "=" }
+func NewRef(sym *Symbol) AST {
+	return SymbolAST{sym}
+}
+
 func NewAST(op string, left, right AST) AST {
 	return &ASTImpl{left, right, op}
 }
@@ -85,6 +126,9 @@ func (tree ASTImpl) Eval() float64 {
 		} else {
 			return -v
 		}
+	case "List":
+		tree.left.Eval()
+		return tree.right.Eval()
 	case "":
 		return tree.Eval()
 	}
