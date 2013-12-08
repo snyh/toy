@@ -13,12 +13,14 @@ import (
     number float64
     fn int
     symbol *Symbol
+    operator string
 }
 
 
-%token EOL COMMENT 
+%token EOL COMMENT LET
 %token <number> NUMBER
-%token <fn> FUNC
+%token <fn> FUNC 
+%token <operator> CMP
 %token <symbol> NAME
 
 %type <node> exp explist
@@ -43,7 +45,8 @@ calclist:
 explist: exp
        | exp ',' explist { $$ = NewAST("List", $1, $3) }
 
-exp: exp '+' exp { $$ = NewAST("+", $1, $3) }
+exp: exp CMP exp { $$ = NewAST($2, $1, $3)  }
+   | exp '+' exp { $$ = NewAST("+", $1, $3) }
    | exp '-' exp { $$ = NewAST("-", $1, $3) }
    | exp '*' exp { $$ = NewAST("*", $1, $3) }
    | exp '/' exp { $$ = NewAST("/", $1, $3) }
@@ -54,8 +57,9 @@ exp: exp '+' exp { $$ = NewAST("+", $1, $3) }
    | NUMBER      { $$ = NumberAST($1) }
    | NAME 	 { $$ = NewRef($1) }
    | '-' exp %prec UMINUS { $$ = NewAST("M", $2, nil) }
-   | FUNC '(' explist ')' { $$ = NewFunc($1, $3) }
    | NAME '=' exp  { $$ = NewASIGN($1, $3) }
+   | FUNC '(' explist ')' { $$ = NewFunc($1, $3) }
+   | NAME '(' explist ')' { $$ = NewCall($1, $3) }
    ;
 
 %%

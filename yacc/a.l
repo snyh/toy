@@ -61,6 +61,14 @@ EXP ([Ee][-+]?[0-9]+)
 
 "OR"	return OR
 
+">"	lval.operator = ">"; return CMP
+"<"	lval.operator = "<"; return CMP
+"<>"	lval.operator = "<>"; return CMP
+"=="	lval.operator = "=="; return CMP
+">="	lval.operator = ">="; return CMP
+"<="	lval.operator = "<="; return CMP
+"!="	lval.operator = "!="; return CMP
+
 
 {NUM} 	tmp, _ := strconv.ParseInt(string(y.buf), 0, 64); lval.number = float64(tmp); return NUMBER
 {FLOAT}	tmp, _ := strconv.ParseFloat(string(y.buf), 64); lval.number = float64(tmp); return NUMBER

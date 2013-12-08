@@ -85,6 +85,22 @@ func NewASIGN(name *Symbol, value AST) AST {
 	return &AsignAST{name, value}
 }
 
+type CallAST struct {
+	fn   *Symbol
+	args AST
+}
+
+func NewCall(fn *Symbol, value AST) AST {
+	return CallAST{fn, value}
+}
+
+func (v CallAST) Eval() float64 {
+	return 0
+}
+func (v CallAST) Type() string {
+	return "C"
+}
+
 type SymbolAST struct {
 	name *Symbol
 }
@@ -105,6 +121,42 @@ func (tree ASTImpl) Type() string { return tree.operator }
 
 func (tree ASTImpl) Eval() float64 {
 	switch tree.operator {
+	case ">":
+		if tree.left.Eval() > tree.right.Eval() {
+			return 1
+		} else {
+			return 0
+		}
+	case "<":
+		if tree.left.Eval() < tree.right.Eval() {
+			return 1
+		} else {
+			return 0
+		}
+	case "!=":
+		if tree.left.Eval() != tree.right.Eval() {
+			return 1
+		} else {
+			return 0
+		}
+	case "==":
+		if tree.left.Eval() == tree.right.Eval() {
+			return 1
+		} else {
+			return 0
+		}
+	case ">=":
+		if tree.left.Eval() >= tree.right.Eval() {
+			return 1
+		} else {
+			return 0
+		}
+	case "<=":
+		if tree.left.Eval() <= tree.right.Eval() {
+			return 1
+		} else {
+			return 0
+		}
 	case "-":
 		return tree.left.Eval() - tree.right.Eval()
 	case "+":
