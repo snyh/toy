@@ -44,17 +44,25 @@ func (y *yylexer) Lex(lval *yySymType) int {
 %yyn c = y.getc()
 
 NUM 0x[a-f0-9]+|[0-9]+
+FLOAT [0-9]?"."[0-9]+
+EXP ([Ee][-+]?[0-9]+)
 
 %%
     y.buf = y.buf[:0]
 
 [ \t]	
 
+"sqrt"	lval.fn = B_SQRT; return FUNC
+"exp"	lval.fn = B_EXP ; return FUNC
+"log"	lval.fn = B_LOG ; return FUNC
+"print"	lval.fn = B_PRINT;return FUNC
+
 "AND"	return AND
 
 "OR"	return OR
 
 {NUM} 	tmp, _ := strconv.ParseInt(string(y.buf), 0, 64); lval.number = float64(tmp); return NUMBER
+{FLOAT}	tmp, _ := strconv.ParseFloat(string(y.buf), 64); lval.number = float64(tmp); return NUMBER
 
 \n	return EOL
 

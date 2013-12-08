@@ -1,10 +1,11 @@
 package main
 
 import "fmt"
+import "math"
 
 type AST interface {
 	Eval() float64
-	IsNumber() bool
+	Type() string
 }
 
 type ASTImpl struct {
@@ -18,15 +19,48 @@ type NumberAST float64
 func (v NumberAST) Eval() float64 {
 	return float64(v)
 }
-func (v NumberAST) IsNumber() bool {
-	return true
+func (v NumberAST) Type() string {
+	return "K"
 }
+
+const (
+	B_SQRT = iota
+	B_EXP
+	B_LOG
+	B_PRINT
+)
+
+type BuiltInAST struct {
+	fnName int
+	arg    AST
+}
+
+func NewFunc(name int, value AST) AST {
+	return BuiltInAST{name, value}
+}
+
+func (v BuiltInAST) Eval() float64 {
+	switch v.fnName {
+	case B_SQRT:
+		return math.Sqrt(v.arg.Eval())
+	case B_EXP:
+		return math.Exp(v.arg.Eval())
+	case B_LOG:
+		return math.Log(v.arg.Eval())
+	case B_PRINT:
+		println(v.arg.Eval())
+		return v.arg.Eval()
+	}
+	panic("Didn't support build-in type")
+}
+
+func (v BuiltInAST) Type() string { return "F" }
 
 func NewAST(op string, left, right AST) AST {
 	return &ASTImpl{left, right, op}
 }
 
-func (tree ASTImpl) IsNumber() bool { return false }
+func (tree ASTImpl) Type() string { return tree.operator }
 
 func (tree ASTImpl) Eval() float64 {
 	switch tree.operator {

@@ -3,7 +3,6 @@ package main
 
 import (
     "bufio"
-    "fmt"
     "os"
 )
 
@@ -12,14 +11,17 @@ import (
 %union {
     value AST
     number float64
+    fn int
 }
 
 
-%token NUMBER EOL OP CP COMMENT AND OR
+%token EOL COMMENT 
+%token <number> NUMBER
+%token <fn> FUNC
 
 %type <value> exp 
-%type <number> NUMBER
 
+%start calclist
 %left OR
 %left AND
 %left '+' '-'
@@ -45,6 +47,7 @@ exp: exp '+' exp { $$ = NewAST("+", $1, $3) }
    | '(' exp ')' { $$ = $2 }
    | NUMBER      { $$ = NumberAST($1) }
    | '-' exp %prec UMINUS { $$ = NewAST("M", $2, nil) }
+   | FUNC '(' exp ')' { $$ = NewFunc($1, $3) }
    ;
 
 %%
